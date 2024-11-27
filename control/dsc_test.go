@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"pault.ag/go/debian/control"
+	"github.com/egibs/go-debian/control"
 )
 
 /*
@@ -95,15 +95,15 @@ Standards-Version: 3.9.3
 Vcs-Browser: http://git.debian.org/?p=collab-maint/fbautostart.git
 Vcs-Git: git://git.debian.org/collab-maint/fbautostart.git
 Build-Depends: debhelper (>= 9)
-Package-List: 
+Package-List:
  fbautostart deb misc optional
-Checksums-Sha1: 
+Checksums-Sha1:
  bc36310c15edc9acf48f0a1daf548bcc6f861372 92748 fbautostart_2.718281828.orig.tar.gz
  af4f1950dd8ed5bb7bd8952c8c00ffdd42eadb46 2396 fbautostart_2.718281828-1.debian.tar.gz
-Checksums-Sha256: 
+Checksums-Sha256:
  bb2fdfd4a38505905222ee02d8236a594bdf6eaefca23462294cacda631745c1 92748 fbautostart_2.718281828.orig.tar.gz
  49f402ff3a72653e63542037be9f4da56e318e412d26d4154f9336fb88df3519 2396 fbautostart_2.718281828-1.debian.tar.gz
-Files: 
+Files:
  06495f9b23b1c9b1bf35c2346cb48f63 92748 fbautostart_2.718281828.orig.tar.gz
  3b0e6dd201d5036f6d1b80f0ac4e1e7d 2396 fbautostart_2.718281828-1.debian.tar.gz
 

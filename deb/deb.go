@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE. }}} */
 
-package deb // import "pault.ag/go/debian/deb"
+package deb // import "github.com/egibs/go-debian/deb"
 
 import (
 	"archive/tar"
@@ -29,9 +29,9 @@ import (
 	"path"
 	"strings"
 
-	"pault.ag/go/debian/control"
-	"pault.ag/go/debian/dependency"
-	"pault.ag/go/debian/version"
+	"github.com/egibs/go-debian/control"
+	"github.com/egibs/go-debian/dependency"
+	"github.com/egibs/go-debian/version"
 )
 
 // Control {{{
@@ -47,8 +47,8 @@ type Control struct {
 	Version       version.Version `required:"true"`
 	Architecture  dependency.Arch `required:"true"`
 	Maintainer    string
-	InstalledSize int             `control:"Installed-Size"`
-	MultiArch     string          `control:"Multi-Arch"`
+	InstalledSize int    `control:"Installed-Size"`
+	MultiArch     string `control:"Multi-Arch"`
 	Depends       dependency.Dependency
 	Recommends    dependency.Dependency
 	Suggests      dependency.Dependency

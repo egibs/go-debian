@@ -18,13 +18,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE. }}} */
 
-package dependency // import "pault.ag/go/debian/dependency"
+package dependency // import "github.com/egibs/go-debian/dependency"
 
 import (
-	"pault.ag/go/debian/version"
+	"github.com/egibs/go-debian/version"
 )
 
-//
 func (dep *Dependency) GetPossibilities(arch Arch) []Possibility {
 	possies := []Possibility{}
 
@@ -44,7 +43,6 @@ func (dep *Dependency) GetPossibilities(arch Arch) []Possibility {
 	return possies
 }
 
-//
 func (dep *Dependency) GetAllPossibilities() []Possibility {
 	possies := []Possibility{}
 
@@ -60,7 +58,6 @@ func (dep *Dependency) GetAllPossibilities() []Possibility {
 	return possies
 }
 
-//
 func (dep *Dependency) GetSubstvars() []Possibility {
 	possies := []Possibility{}
 

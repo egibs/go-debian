@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE. }}} */
 
-package control // import "pault.ag/go/debian/control"
+package control // import "github.com/egibs/go-debian/control"
 
 import (
 	"bufio"
@@ -26,7 +26,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"pault.ag/go/debian/dependency"
+	"github.com/egibs/go-debian/dependency"
 )
 
 // Encapsulation for a debian/control file, which is a series of RFC2822-like
