@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE. }}} */
 
-package control // import "pault.ag/go/debian/control"
+package control // import "github.com/egibs/go-debian/control"
 
 import (
 	"bytes"
@@ -33,7 +33,7 @@ import (
 	"strconv"
 	"strings"
 
-	"pault.ag/go/debian/hashio"
+	"github.com/egibs/go-debian/hashio"
 )
 
 // A FileHash is an entry as found in the Files, Checksum-Sha1, and

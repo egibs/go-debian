@@ -25,8 +25,13 @@ import (
 	"strings"
 	"testing"
 
+<<<<<<< HEAD
 	"pault.ag/go/debian/control"
 	"pault.ag/go/debian/dependency"
+=======
+	"github.com/egibs/go-debian/control"
+	"github.com/egibs/go-debian/dependency"
+>>>>>>> v0.18.0
 )
 
 func TestSourceIndexParse(t *testing.T) {
@@ -52,7 +57,7 @@ Checksums-Sha256:
  f0a79bb3931cd145677c947d8cd87cf60869f604933e685e74225bb01ad992f4 932125 fbasics_3011.87.orig.tar.gz
  e087596fc0ac2bca6cf9ad531afc4329e75b2d7b26f0a0334be8dcb29d94f4ee 3818 fbasics_3011.87-2.diff.gz
 Homepage: http://www.Rmetrics.org
-Package-List: 
+Package-List:
  r-cran-fbasics deb gnu-r optional arch=any
 Directory: pool/main/f/fbasics
 Priority: source
@@ -81,7 +86,7 @@ Checksums-Sha256:
  bb2fdfd4a38505905222ee02d8236a594bdf6eaefca23462294cacda631745c1 92748 fbautostart_2.718281828.orig.tar.gz
  49f402ff3a72653e63542037be9f4da56e318e412d26d4154f9336fb88df3519 2396 fbautostart_2.718281828-1.debian.tar.gz
 Homepage: https://launchpad.net/fbautostart
-Package-List: 
+Package-List:
  fbautostart deb misc optional
 Directory: pool/main/f/fbautostart
 Priority: source

@@ -17,7 +17,7 @@ Here's a trivial example, which will print out the Package name for a
 		"log"
 		"os"
 
-		"pault.ag/go/debian/deb"
+		"github.com/egibs/go-debian/deb"
 	)
 
 	func main() {
@@ -35,4 +35,4 @@ Here's a trivial example, which will print out the Package name for a
 		log.Printf("Package: %s\n", debFile.Control.Package)
 	}
 */
-package deb // import "pault.ag/go/debian/deb"
+package deb // import "github.com/egibs/go-debian/deb"

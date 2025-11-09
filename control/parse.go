@@ -18,18 +18,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE. }}} */
 
-package control // import "pault.ag/go/debian/control"
+package control // import "github.com/egibs/go-debian/control"
 
 import (
 	"bufio"
 	"bytes"
+	"crypto/x509"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"strings"
 	"unicode"
 
-	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/clearsign"
 )
 
@@ -108,7 +108,7 @@ func (p *Paragraph) Update(other Paragraph) Paragraph {
 // struct.
 type ParagraphReader struct {
 	reader *bufio.Reader
-	signer *openpgp.Entity
+	signer *x509.Certificate
 }
 
 // {{{ NewParagraphReader
@@ -119,25 +119,61 @@ type ParagraphReader struct {
 //
 // Also keep in mind, `reader` may be consumed 100% in memory due to
 // the underlying OpenPGP API being hella fiddly.
-func NewParagraphReader(reader io.Reader, keyring *openpgp.EntityList) (*ParagraphReader, error) {
+func NewParagraphReader(reader io.Reader, certs []*x509.Certificate) (*ParagraphReader, error) {
+	if certs != nil && len(certs) == 0 {
+		return nil, fmt.Errorf("empty certificate list provided")
+	}
+
 	bufioReader := bufio.NewReader(reader)
 	ret := ParagraphReader{
 		reader: bufioReader,
 		signer: nil,
 	}
 
-	// OK. We have a document. Now, let's peek ahead and see if we've got an
-	// OpenPGP Clearsigned set of Paragraphs. If we do, we're going to go ahead
-	// and do the decode dance.
 	line, _ := bufioReader.Peek(15)
 	if string(line) != "-----BEGIN PGP " {
 		return &ret, nil
 	}
 
-	if err := ret.decodeClearsig(keyring); err != nil {
+	if err := ret.decodeClearsig(certs); err != nil {
 		return nil, err
 	}
 	return &ret, nil
+}
+
+func (p *ParagraphReader) decodeSig(certs []*x509.Certificate) error {
+	if certs != nil && len(certs) == 0 {
+		return fmt.Errorf("empty certificate list provided")
+	}
+
+	signedData, err := io.ReadAll(p.reader)
+	if err != nil {
+		return err
+	}
+
+	parts := bytes.Split(signedData, []byte("\n-----BEGIN SIGNATURE-----\n"))
+	if len(parts) != 2 {
+		return fmt.Errorf("invalid signed input format")
+	}
+
+	data := parts[0]
+	sig := parts[1]
+
+	if certs == nil {
+		p.reader = bufio.NewReader(bytes.NewBuffer(data))
+		return nil
+	}
+
+	for _, cert := range certs {
+		err := cert.CheckSignature(x509.SHA256WithRSA, data, sig)
+		if err == nil {
+			p.signer = cert
+			p.reader = bufio.NewReader(bytes.NewBuffer(data))
+			return nil
+		}
+	}
+
+	return fmt.Errorf("no valid signature found")
 }
 
 // }}}
@@ -145,7 +181,7 @@ func NewParagraphReader(reader io.Reader, keyring *openpgp.EntityList) (*Paragra
 // Signer {{{
 
 // Return the Entity (if one exists) that signed this set of Paragraphs.
-func (p *ParagraphReader) Signer() *openpgp.Entity {
+func (p *ParagraphReader) Signer() *x509.Certificate {
 	return p.signer
 }
 
@@ -273,51 +309,40 @@ func (p *ParagraphReader) Next() (*Paragraph, error) {
 // we encounter along the way, such as an invalid signature, unknown
 // signer, or incomplete document. If `keyring` is `nil`, checking of the
 // signed data is *not* preformed.
-func (p *ParagraphReader) decodeClearsig(keyring *openpgp.EntityList) error {
-	// One *massive* downside here is that the OpenPGP module in Go operates
-	// on byte arrays in memory, and *not* on Readers and Writers. This is a
-	// huge PITA because it doesn't need to be that way, and this forces
-	// clearsigned documents into memory. Which fucking sucks. But here
-	// we are. It's likely worth a bug or two on this.
-
+func (p *ParagraphReader) decodeClearsig(certs []*x509.Certificate) error {
 	signedData, err := ioutil.ReadAll(p.reader)
 	if err != nil {
 		return err
 	}
 
 	block, _ := clearsign.Decode(signedData)
-	/* We're only interested in the first block. This may change in the
-	 * future, in which case, we should likely set reader back to
-	 * the remainder, and return that out to put through another
-	 * ParagraphReader, since it may have a different signer. */
-
 	if block == nil {
 		return fmt.Errorf("Invalid clearsigned input")
 	}
 
-	if keyring == nil {
-		/* As a special case, if the keyring is nil, we can go ahead
-		 * and assume this data isn't intended to be checked against the
-		 * keyring. So, we'll just pass on through. */
-		p.reader = bufio.NewReader(bytes.NewBuffer(block.Bytes))
-		return nil
+	if certs != nil {
+		if len(certs) == 0 {
+			return fmt.Errorf("empty certificate list provided")
+		}
+
+		data := block.Bytes
+		sigBytes, err := ioutil.ReadAll(block.ArmoredSignature.Body)
+		if err != nil {
+			return fmt.Errorf("failed to read signature: %v", err)
+		}
+
+		for _, cert := range certs {
+			err := cert.CheckSignature(x509.SHA256WithRSA, data, sigBytes)
+			if err == nil {
+				p.signer = cert
+				p.reader = bufio.NewReader(bytes.NewBuffer(data))
+				return nil
+			}
+		}
+		return fmt.Errorf("no valid signature found")
 	}
 
-	/* Now, we have to go ahead and check that the signature is valid and
-	 * relates to an entity we have in our keyring */
-	signer, err := openpgp.CheckDetachedSignature(
-		keyring,
-		bytes.NewReader(block.Bytes),
-		block.ArmoredSignature.Body,
-	)
-
-	if err != nil {
-		return err
-	}
-
-	p.signer = signer
 	p.reader = bufio.NewReader(bytes.NewBuffer(block.Bytes))
-
 	return nil
 }
 

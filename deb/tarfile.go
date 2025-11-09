@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE. }}} */
 
-package deb // import "pault.ag/go/debian/deb"
+package deb // import "github.com/egibs/go-debian/deb"
 
 import (
 	"fmt"
@@ -31,9 +31,9 @@ import (
 	"compress/bzip2"
 	"compress/gzip"
 
-	"github.com/kjk/lzma"
 	"github.com/klauspost/compress/zstd"
-	"github.com/xi2/xz"
+	"github.com/ulikunitz/xz"
+	"github.com/ulikunitz/xz/lzma"
 )
 
 // known compression types {{{
@@ -45,7 +45,7 @@ func gzipNewReader(r io.Reader) (io.ReadCloser, error) {
 }
 
 func xzNewReader(r io.Reader) (io.ReadCloser, error) {
-	reader, err := xz.NewReader(r, 0)
+	reader, err := xz.NewReader(r)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,11 @@ func xzNewReader(r io.Reader) (io.ReadCloser, error) {
 }
 
 func lzmaNewReader(r io.Reader) (io.ReadCloser, error) {
-	return lzma.NewReader(r), nil
+	lr, err := lzma.NewReader(r)
+	if err != nil {
+		return nil, err
+	}
+	return io.NopCloser(lr), nil
 }
 
 func bzipNewReader(r io.Reader) (io.ReadCloser, error) {

@@ -18,16 +18,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE. }}} */
 
-package control // import "pault.ag/go/debian/control"
+package control // import "github.com/egibs/go-debian/control"
 
 import (
+	"crypto/x509"
 	"fmt"
 	"io"
 	"reflect"
 	"strconv"
 	"strings"
-
-	"golang.org/x/crypto/openpgp"
 )
 
 // Unmarshallable {{{
@@ -83,11 +82,9 @@ type Decoder struct {
 	paragraphReader ParagraphReader
 }
 
-// NewDecoder {{{
-
-func NewDecoder(reader io.Reader, keyring *openpgp.EntityList) (*Decoder, error) {
+func NewDecoder(reader io.Reader, certs []*x509.Certificate) (*Decoder, error) {
 	ret := Decoder{}
-	pr, err := NewParagraphReader(reader, keyring)
+	pr, err := NewParagraphReader(reader, certs)
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +119,6 @@ func decode(p *ParagraphReader, into reflect.Value) error {
 	default:
 		return fmt.Errorf("Can't Decode into a %s", into.Elem().Type().Name())
 	}
-
-	return nil
 }
 
 // }}}
@@ -315,7 +310,7 @@ func decodeSlice(p *ParagraphReader, into reflect.Value) error {
 
 // Signer {{{
 
-func (d *Decoder) Signer() *openpgp.Entity {
+func (d *Decoder) Signer() *x509.Certificate {
 	return d.paragraphReader.Signer()
 }
 

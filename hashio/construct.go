@@ -1,4 +1,4 @@
-package hashio // import "pault.ag/go/debian/hashio"
+package hashio // import "github.com/egibs/go-debian/hashio"
 
 import (
 	"io"
