@@ -326,7 +326,6 @@ func parsePossibilityOperator(input *input, version *VersionRelation) error {
 		"Unknown Operator in Possibility Version modifier: %s",
 		operator,
 	)
-
 }
 
 /* */

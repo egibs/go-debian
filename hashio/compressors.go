@@ -1,10 +1,9 @@
 package hashio // import "github.com/egibs/go-debian/hashio"
 
 import (
+	"compress/gzip"
 	"fmt"
 	"io"
-
-	"compress/gzip"
 )
 
 type Compressor func(io.Writer) (io.WriteCloser, error)

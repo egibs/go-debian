@@ -25,13 +25,8 @@ import (
 	"strings"
 	"testing"
 
-<<<<<<< HEAD
-	"pault.ag/go/debian/control"
-	"pault.ag/go/debian/dependency"
-=======
 	"github.com/egibs/go-debian/control"
 	"github.com/egibs/go-debian/dependency"
->>>>>>> v0.18.0
 )
 
 func TestSourceIndexParse(t *testing.T) {

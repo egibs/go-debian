@@ -148,10 +148,10 @@ func parseArEntry(line []byte) (*ArEntry, error) {
 	}
 
 	for target, value := range map[entryField][]byte{
-		entryField{"Timestamp", &entry.Timestamp}: line[16:28],
-		entryField{"OwnerID", &entry.OwnerID}:     line[28:34],
-		entryField{"GroupID", &entry.GroupID}:     line[34:40],
-		entryField{"Size", &entry.Size}:           line[48:58],
+		{"Timestamp", &entry.Timestamp}: line[16:28],
+		{"OwnerID", &entry.OwnerID}:     line[28:34],
+		{"GroupID", &entry.GroupID}:     line[34:40],
+		{"Size", &entry.Size}:           line[48:58],
 	} {
 		input := strings.TrimSpace(string(value))
 		if input == "" {

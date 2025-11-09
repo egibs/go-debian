@@ -37,8 +37,8 @@ type Arch struct {
 
 func ParseArchitectures(arch string) ([]Arch, error) {
 	ret := []Arch{}
-	arches := strings.Split(arch, " ")
-	for _, el := range arches {
+	arches := strings.SplitSeq(arch, " ")
+	for el := range arches {
 		el := strings.Trim(el, " \t\n\r")
 
 		if el == "" {
@@ -85,7 +85,7 @@ func expandAnyAnyAny(parts []string) []string {
 }
 
 func matchShortAgainstTupletable(parts []string) []string {
-	var matches = strings.Split(TUPLETABLE, "\n")
+	matches := strings.Split(TUPLETABLE, "\n")
 nextMatch:
 	for _, line := range matches {
 		line := strings.TrimSpace(line)
@@ -103,7 +103,7 @@ nextMatch:
 			continue
 		}
 
-		var cpu = ""
+		cpu := ""
 		for idx := range parts {
 			matchName := shortName[idx]
 			partName := parts[idx]
@@ -124,7 +124,6 @@ nextMatch:
 }
 
 func archToStringWithTupletable(arch Arch) string {
-
 	if arch == All {
 		return "all"
 	}
@@ -140,7 +139,7 @@ func archToStringWithTupletable(arch Arch) string {
 		arch.CPU,
 	}
 
-	var matches = strings.Split(TUPLETABLE, "\n")
+	matches := strings.Split(TUPLETABLE, "\n")
 	for _, line := range matches {
 		line := strings.TrimSpace(line)
 		if line == "" {
@@ -169,7 +168,6 @@ func archToStringWithTupletable(arch Arch) string {
 /*
  */
 func parseArchInto(ret *Arch, arch string) error {
-
 	if arch == "all" {
 		*ret = Arch{
 			ABI:  "all",
@@ -258,7 +256,6 @@ func (arch *Arch) IsWildcard() bool {
 /*
  */
 func (arch *Arch) Is(other *Arch) bool {
-
 	if arch.IsWildcard() && other.IsWildcard() {
 		/* We can't compare wildcards to other wildcards. That's just
 		 * insanity. We always need a concrete arch. Not even going to try. */

@@ -1,13 +1,12 @@
 package hashio // import "github.com/egibs/go-debian/hashio"
 
 import (
-	"fmt"
-	"hash"
-
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
+	"fmt"
+	"hash"
 )
 
 func GetHash(name string) (hash.Hash, error) {
