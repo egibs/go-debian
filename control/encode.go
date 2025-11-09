@@ -47,7 +47,7 @@ type Marshallable interface {
 //
 // In most cases, the Marshal API should be sufficient. Use of this API
 // is mildly discouraged.
-func ConvertToParagraph(incoming interface{}) (*Paragraph, error) {
+func ConvertToParagraph(incoming any) (*Paragraph, error) {
 	data := reflect.ValueOf(incoming)
 	if data.Type().Kind() != reflect.Ptr {
 		return nil, fmt.Errorf("Can only Decode a pointer to a Struct")
@@ -159,7 +159,7 @@ func marshalStructValueStruct(field reflect.Value, fieldType reflect.StructField
 // convert a struct value of type slice {{{
 
 func marshalStructValueSlice(field reflect.Value, fieldType reflect.StructField) (string, error) {
-	var delim = " "
+	delim := " "
 	if it := fieldType.Tag.Get("delim"); it != "" {
 		delim = it
 	}
@@ -210,7 +210,7 @@ func marshalStructValueSlice(field reflect.Value, fieldType reflect.StructField)
 // Marshallable interface. It's highly encouraged to put this interface on
 // the struct without a pointer receiver, so that pass-by-value works
 // when you call Marshal.
-func Marshal(writer io.Writer, data interface{}) error {
+func Marshal(writer io.Writer, data any) error {
 	encoder, err := NewEncoder(writer)
 	if err != nil {
 		return err
@@ -268,7 +268,7 @@ func NewEncoder(writer io.Writer) (*Encoder, error) {
 
 // Take a Struct, Encode it into a Paragraph, and write that out to the
 // io.Writer set up when the Encoder was configured.
-func (e *Encoder) Encode(incoming interface{}) error {
+func (e *Encoder) Encode(incoming any) error {
 	data := reflect.ValueOf(incoming)
 	return e.encode(data)
 }

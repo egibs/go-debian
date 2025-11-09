@@ -21,15 +21,13 @@
 package deb // import "github.com/egibs/go-debian/deb"
 
 import (
+	"archive/tar"
+	"compress/bzip2"
+	"compress/gzip"
 	"fmt"
 	"io"
 	"path/filepath"
 	"strings"
-
-	"archive/tar"
-
-	"compress/bzip2"
-	"compress/gzip"
 
 	"github.com/klauspost/compress/zstd"
 	"github.com/ulikunitz/xz"
@@ -96,9 +94,9 @@ func DecompressorFor(ext string) DecompressorFunc {
 // SetXZMaxDict updates the maximum dictionary size parameter for XZ
 // decompressing. If zero is supplied, the default max dictionary size will be
 // used.
-func SetXZMaxDict(maxDict uint32) {
+func SetXZMaxDict(_ uint32) {
 	knownCompressionAlgorithms[".xz"] = func(r io.Reader) (io.ReadCloser, error) {
-		reader, err := xz.NewReader(r, maxDict)
+		reader, err := xz.NewReader(r)
 		if err != nil {
 			return nil, err
 		}

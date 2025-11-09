@@ -66,7 +66,7 @@ type Unmarshallable interface {
 // Structs that contain Paragraph as an Anonymous member will have that
 // member populated with the parsed RFC822 block, to allow access to the
 // .Values and .Order members.
-func Unmarshal(data interface{}, reader io.Reader) error {
+func Unmarshal(data any, reader io.Reader) error {
 	decoder, err := NewDecoder(reader, nil)
 	if err != nil {
 		return err
@@ -96,7 +96,7 @@ func NewDecoder(reader io.Reader, certs []*x509.Certificate) (*Decoder, error) {
 
 // Decode {{{
 
-func (d *Decoder) Decode(into interface{}) error {
+func (d *Decoder) Decode(into any) error {
 	return decode(&d.paragraphReader, reflect.ValueOf(into))
 }
 
@@ -222,7 +222,6 @@ func decodeStructValue(field reflect.Value, fieldType reflect.StructField, value
 	}
 
 	return fmt.Errorf("Unknown type of field: %s", field.Type())
-
 }
 
 // }}}
@@ -251,19 +250,19 @@ func decodeStructValueStruct(incoming reflect.Value, incomingField reflect.Struc
 func decodeStructValueSlice(field reflect.Value, fieldType reflect.StructField, value string) error {
 	underlyingType := field.Type().Elem()
 
-	var delim = " "
+	delim := " "
 	if it := fieldType.Tag.Get("delim"); it != "" {
 		delim = it
 	}
 
-	var strip = ""
+	strip := ""
 	if it := fieldType.Tag.Get("strip"); it != "" {
 		strip = it
 	}
 
 	value = strings.Trim(value, strip)
 
-	for _, el := range strings.Split(value, delim) {
+	for el := range strings.SplitSeq(value, delim) {
 		el = strings.Trim(el, strip)
 
 		targetValue := reflect.New(underlyingType)
@@ -301,7 +300,6 @@ func decodeSlice(p *ParagraphReader, into reflect.Value) error {
 		into.Elem().Set(reflect.Append(into.Elem(), targetValue.Elem()))
 	}
 	return nil
-
 }
 
 // }}}
@@ -326,7 +324,7 @@ func (d *Decoder) Signer() *x509.Certificate {
 //
 // In most cases, the Unmarshal API should be sufficient. Use of this API
 // is mildly discouraged.
-func UnpackFromParagraph(para Paragraph, incoming interface{}) error {
+func UnpackFromParagraph(para Paragraph, incoming any) error {
 	data := reflect.ValueOf(incoming)
 	if data.Type().Kind() != reflect.Ptr {
 		return fmt.Errorf("Can only Decode a pointer to a Struct")

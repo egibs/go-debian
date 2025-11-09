@@ -57,7 +57,6 @@ func partition(line, delim string) (string, string) {
 		return line, ""
 	}
 	return entries[0], entries[1]
-
 }
 
 func ParseOne(reader *bufio.Reader) (*ChangelogEntry, error) {
@@ -102,7 +101,7 @@ func ParseOne(reader *bufio.Reader) (*ChangelogEntry, error) {
 
 	changeLog.Arguments = map[string]string{}
 
-	for _, entry := range strings.Split(options, ",") {
+	for entry := range strings.SplitSeq(options, ",") {
 		key, value := partition(trim(entry), "=")
 		changeLog.Arguments[trim(key)] = trim(value)
 	}

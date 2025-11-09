@@ -63,7 +63,7 @@ func (p *Paragraph) WriteTo(out io.Writer) error {
 		value = strings.Replace(value, "\n \n", "\n .\n", -1)
 
 		if _, err := out.Write(
-			[]byte(fmt.Sprintf("%s: %s\n", key, value)),
+			fmt.Appendf(nil, "%s: %s\n", key, value),
 		); err != nil {
 			return err
 		}

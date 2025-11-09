@@ -100,7 +100,7 @@ func TestArEmptyFields(t *testing.T) {
 	firstContent, err := io.ReadAll(firstEntry.Data)
 	isok(t, err)
 	assert(t, firstEntry.Size == int64(len(firstContent)))
-	//assert(t, string(firstContent) == "")
+	// assert(t, string(firstContent) == "")
 
 	// Second
 	secondEntry, err := ar.Next()

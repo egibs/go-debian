@@ -157,7 +157,6 @@ func LoadFile(path string) (*Deb, Closer, error) {
 	debFile.Closer = &closerAdapter{closeFunc}
 
 	return debFile, closeFunc, nil
-
 }
 
 // }}}
